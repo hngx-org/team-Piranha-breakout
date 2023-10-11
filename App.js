@@ -1,10 +1,8 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import HockeyGame from "./HockeyGame";
-import GameScreen from "./GameScreen";
+import { StyleSheet, View } from "react-native";
 
 import { Audio } from "expo-av";
 import { useEffect } from "react";
+import AppNavigation from "./navigation/AppNavigation";
 
 export default function App() {
   useEffect(() => {
@@ -28,9 +26,13 @@ export default function App() {
       backgroundMusic.unloadAsync();
     };
   }, []);
+
+  return <AppNavigation />;
+
   return (
     <View style={{ flex: 1 }}>
-      <GameScreen />
+      <AppNavigation />
+      {/* <GameScreen /> */}
     </View>
   );
 }
