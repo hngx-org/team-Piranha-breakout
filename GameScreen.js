@@ -38,6 +38,20 @@ const GameScreen = () => {
     return () => clearInterval(gameLoop);
   }, []);
 
+  //   const updateGame = () => {
+  //     // Update ball position based on its velocity
+  //     setBallPosition((prevPosition) => ({
+  //       x: prevPosition.x + ballVelocityX,
+  //       y: prevPosition.y + ballVelocityY,
+  //     }));
+
+  //     // Check for collisions with walls, paddle, and bricks
+  //     handleCollisions();
+
+  //     // Check for game over conditions
+  //     checkGameOver();
+  //   };
+
   const updateGame = () => {
     // Update ball position based on its velocity
     setBallPosition((prevPosition) => ({
@@ -50,6 +64,20 @@ const GameScreen = () => {
 
     // Check for game over conditions
     checkGameOver();
+
+    // Ensure the ball stays within the screen boundaries
+    if (
+      ballPosition.x < 0 ||
+      ballPosition.x + BALL_SIZE > Dimensions.get("window").width
+    ) {
+      // Reverse the horizontal velocity to keep the ball within the screen
+      ballVelocityX = -ballVelocityX;
+    }
+
+    if (ballPosition.y < 0) {
+      // Reverse the vertical velocity to keep the ball within the screen
+      ballVelocityY = -ballVelocityY;
+    }
   };
 
   const handleCollisions = () => {
