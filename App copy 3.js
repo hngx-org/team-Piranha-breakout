@@ -1,5 +1,4 @@
-import React, { useState, useRef, useEffect, Component } from "react";
-
+import React, { Component } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,10 +9,7 @@ import {
   Dimensions,
   PanResponder,
 } from "react-native";
-
-// import { activateKeepAwake } from "expo-keep-awake";
-import { activateKeepAwakeAsync } from "expo-keep-awake";
-
+import { activateKeepAwake } from "expo-keep-awake";
 import Matter from "matter-js";
 import { GameEngine } from "react-native-game-engine";
 import Constants from "./Constants";
@@ -22,6 +18,7 @@ import Racket from "./Racket";
 import Ball from "./Ball";
 import Wall from "./Wall";
 import heart from "./assets/heart.png";
+// import { gyroscope } from "react-native-sensors";
 import { Gyroscope } from "expo-sensors";
 
 export default class App extends Component {
@@ -383,7 +380,11 @@ export default class App extends Component {
         )}
         {!this.state.start && (
           <TouchableOpacity
-            style={styles.fullScreenButton}
+            // style={styles.fullScreenButton}
+            style={[
+              styles.fullScreenButton,
+              { borderWidth: 2, borderColor: "red" },
+            ]}
             onPress={this.start}
           >
             <View style={styles.startFullScreen}>
@@ -399,7 +400,7 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#000000",
   },
   gameContainer: {
     position: "absolute",
@@ -413,7 +414,7 @@ const styles = StyleSheet.create({
     fontSize: 48,
   },
   startText: {
-    color: "black",
+    color: "#fff",
     fontSize: 30,
     textAlign: "center",
   },
@@ -427,6 +428,13 @@ const styles = StyleSheet.create({
     opacity: 0.8,
     justifyContent: "center",
     alignItems: "center",
+  },
+  paddle: {
+    position: "absolute",
+    width: 100,
+    height: 20,
+    backgroundColor: "red",
+    marginBottom: 50,
   },
   startFullScreen: {
     position: "absolute",
@@ -459,6 +467,7 @@ const styles = StyleSheet.create({
     left: 50,
     flex: 1,
     fontSize: 20,
+    color: "#ffffff",
     fontWeight: "bold",
   },
 });

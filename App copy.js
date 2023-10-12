@@ -1,5 +1,4 @@
-import React, { useState, useRef, useEffect, Component } from "react";
-
+import React, { Component } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,13 +6,8 @@ import {
   StatusBar,
   TouchableOpacity,
   Image,
-  Dimensions,
-  PanResponder,
 } from "react-native";
-
-// import { activateKeepAwake } from "expo-keep-awake";
-import { activateKeepAwakeAsync } from "expo-keep-awake";
-
+import { activateKeepAwake } from "expo-keep-awake";
 import Matter from "matter-js";
 import { GameEngine } from "react-native-game-engine";
 import Constants from "./Constants";
@@ -22,7 +16,7 @@ import Racket from "./Racket";
 import Ball from "./Ball";
 import Wall from "./Wall";
 import heart from "./assets/heart.png";
-import { Gyroscope } from "expo-sensors";
+// import { gyroscope } from "react-native-sensors";
 
 export default class App extends Component {
   constructor(props) {
@@ -31,86 +25,10 @@ export default class App extends Component {
       running: true, // game on / off
       start: false, // ball thrown
       lives: 3, // nb lives
-      paddleX: 0,
-      bricks: [
-        { x: 10, y: 100, active: true },
-        { x: 70, y: 100, active: true },
-        { x: 130, y: 100, active: true },
-        { x: 190, y: 100, active: true },
-        { x: 250, y: 100, active: true },
-        { x: 310, y: 100, active: true },
-        { x: 370, y: 100, active: true },
-        { x: 430, y: 100, active: true },
-        { x: 490, y: 100, active: true },
-        { x: 550, y: 100, active: true },
-        // Add more bricks as needed
-      ],
-      paddlePosition: (Dimensions.get("window").width - 100) / 2,
-      x: 0,
-      y: 0,
-      z: 0,
-      subscription: null,
     };
     this.gameEngine = null;
     this.entities = this.setupWorld();
-    this.panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: this.handlePaddleMove,
-    });
   }
-
-  handlePaddleMove = (e, gestureState) => {
-    if (this.entities.racket) {
-      // Update the position of the racket's body
-      let newPaddlePosition = gestureState.moveX - 100 / 2;
-      if (newPaddlePosition < 0) {
-        newPaddlePosition = 0;
-      } else if (newPaddlePosition > Dimensions.get("window").width - 100) {
-        newPaddlePosition = Dimensions.get("window").width - 100;
-      }
-
-      Matter.Body.setPosition(this.entities.racket.body, {
-        x: newPaddlePosition + 100 / 2, // Adjusted for the width of the racket
-        y: this.entities.racket.body.position.y, // Keep the same Y position
-      });
-
-      // Update the state if you need to track the position in your component's state
-      this.setState({ paddlePosition: newPaddlePosition });
-    }
-  };
-
-  checkGameOver = () => {
-    // Check if all bricks are destroyed
-    if (bricks.every((brick) => !brick.active)) {
-      // Handle game over, e.g., reset the ball's position and bricks
-      setBallPosition({
-        x: Dimensions.get("window").width / 2 - BALL_SIZE / 2,
-        y: Dimensions.get("window").height - 100,
-      });
-      setBricks([
-        { x: 10, y: 100, active: true },
-        { x: 70, y: 100, active: true },
-        // Add more bricks as needed
-      ]);
-      // You can also increment the level or perform other actions here.
-    }
-
-    // Check if the ball has gone below the bottom of the screen
-    if (ballPosition.y > Dimensions.get("window").height) {
-      // Handle game over, e.g., reset the ball's position and bricks
-      setBallPosition({
-        x: Dimensions.get("window").width / 2 - BALL_SIZE / 2,
-        y: Dimensions.get("window").height - 100,
-      });
-      setBricks([
-        { x: 10, y: 100, active: true },
-        { x: 70, y: 100, active: true },
-        // Add more bricks as needed
-      ]);
-      // You may also decrement lives here if applicable.
-    }
-  };
 
   setupWorld = () => {
     let engine = Matter.Engine.create({ enableSleeping: false });
@@ -209,32 +127,31 @@ export default class App extends Component {
       racket: {
         body: racket,
         size: [Constants.RACKET_WIDTH, Constants.RACKET_HEIGHT],
-        color: "#393eca",
-        paddlePosition: this.state.paddlePosition,
+        color: "blue",
         renderer: Racket,
       },
       ball: {
         body: ball,
-        size: [20, 20],
-        color: "#ffffff",
+        size: [10, 10],
+        color: "grey",
         renderer: Ball,
       },
       wallLeft: {
         body: wallLeft,
         size: [Constants.WALL_WIDTH, Constants.WALL_HEIGHT],
-        color: "#3464ff",
+        color: "orange",
         renderer: Wall,
       },
       wallRight: {
         body: wallRight,
         size: [Constants.WALL_WIDTH, Constants.WALL_HEIGHT],
-        color: "#3464ff",
+        color: "orange",
         renderer: Wall,
       },
       ceiling: {
         body: ceiling,
         size: [Constants.WALL_HEIGHT, Constants.WALL_WIDTH],
-        color: "#d6e0ff",
+        color: "orange",
         renderer: Wall,
       },
       floor: {
@@ -274,29 +191,29 @@ export default class App extends Component {
 
   start = (e) => {
     console.log("start");
-    activateKeepAwakeAsync();
-    /*  gyroscope.subscribe(({ x, y, z, timestamp }) => {
-      //this.setState({gyroscopeY: y, gyroscopeX: x, gyroscopeZ: z})
-      let newRacketX = this.entities.racket.body.position.x;
-      if (Math.abs(x) > Math.abs(y)) {
-        newRacketX = newRacketX + x;
-      } else {
-        newRacketX = newRacketX + y;
-      }
+    activateKeepAwake();
+    // gyroscope.subscribe(({ x, y, z, timestamp }) => {
+    //   //this.setState({gyroscopeY: y, gyroscopeX: x, gyroscopeZ: z})
+    //   let newRacketX = this.entities.racket.body.position.x;
+    //   if (Math.abs(x) > Math.abs(y)) {
+    //     newRacketX = newRacketX + x;
+    //   } else {
+    //     newRacketX = newRacketX + y;
+    //   }
 
-      if (newRacketX < Constants.RACKET_MIN_X_POSITION) {
-        newRacketX = Constants.RACKET_MIN_X_POSITION;
-      }
+    //   if (newRacketX < Constants.RACKET_MIN_X_POSITION) {
+    //     newRacketX = Constants.RACKET_MIN_X_POSITION;
+    //   }
 
-      if (newRacketX > Constants.RACKET_MAX_X_POSITION) {
-        newRacketX = Constants.RACKET_MAX_X_POSITION;
-      }
+    //   if (newRacketX > Constants.RACKET_MAX_X_POSITION) {
+    //     newRacketX = Constants.RACKET_MAX_X_POSITION;
+    //   }
 
-      Matter.Body.setPosition(this.entities.racket.body, {
-        x: newRacketX,
-        y: this.entities.racket.body.position.y,
-      });
-    }); */
+    //   Matter.Body.setPosition(this.entities.racket.body, {
+    //     x: newRacketX,
+    //     y: this.entities.racket.body.position.y,
+    //   });
+    // });
     this.setState({
       start: true,
     });
@@ -323,40 +240,9 @@ export default class App extends Component {
     });
   };
 
-  componentDidMount() {
-    this._subscribe();
-  }
-
-  componentWillUnmount() {
-    this._unsubscribe();
-  }
-
-  _slow = () => Gyroscope.setUpdateInterval(1000);
-
-  _fast = () => Gyroscope.setUpdateInterval(16);
-
-  _subscribe = () => {
-    this.setState({
-      subscription: Gyroscope.addListener((gyroscopeData) => {
-        this.setState({
-          x: gyroscopeData.x,
-          y: gyroscopeData.y,
-          z: gyroscopeData.z,
-        });
-      }),
-    });
-  };
-
-  _unsubscribe = () => {
-    if (this.state.subscription) {
-      this.state.subscription.remove();
-      this.setState({ subscription: null });
-    }
-  };
-
   render() {
     return (
-      <View style={styles.container} {...this.panResponder.panHandlers}>
+      <View style={styles.container}>
         <GameEngine
           ref={(ref) => {
             this.gameEngine = ref;
@@ -387,7 +273,9 @@ export default class App extends Component {
             onPress={this.start}
           >
             <View style={styles.startFullScreen}>
-              <Text style={styles.startText}>Click to start</Text>
+              <Text style={styles.startText}>
+                Cliquez n'importe où pour lancer la balle
+              </Text>
             </View>
           </TouchableOpacity>
         )}

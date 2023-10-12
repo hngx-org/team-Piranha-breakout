@@ -1,5 +1,4 @@
-import React, { useState, useRef, useEffect, Component } from "react";
-
+import React, { Component } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,10 +9,7 @@ import {
   Dimensions,
   PanResponder,
 } from "react-native";
-
-// import { activateKeepAwake } from "expo-keep-awake";
-import { activateKeepAwakeAsync } from "expo-keep-awake";
-
+import { activateKeepAwake } from "expo-keep-awake";
 import Matter from "matter-js";
 import { GameEngine } from "react-native-game-engine";
 import Constants from "./Constants";
@@ -22,6 +18,7 @@ import Racket from "./Racket";
 import Ball from "./Ball";
 import Wall from "./Wall";
 import heart from "./assets/heart.png";
+// import { gyroscope } from "react-native-sensors";
 import { Gyroscope } from "expo-sensors";
 
 export default class App extends Component {
