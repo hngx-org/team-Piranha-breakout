@@ -1,7 +1,7 @@
 import React from "react";
-import { Image, View } from "react-native";
+import { View } from "react-native";
 
-const Racket = (props) => {
+const GameWall = (props) => {
   const width = props.size[0];
   const height = props.size[1];
   const x = props.body.position.x - width / 2;
@@ -15,11 +15,10 @@ const Racket = (props) => {
         top: y,
         width: width,
         height: height,
-        backgroundColor: props.color,
-        borderRadius: 40,
+        backgroundColor: "white",
       }}
     />
   );
 };
 
-export default Racket;
+export default GameWall;

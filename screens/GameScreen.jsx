@@ -6,6 +6,7 @@ import {
   StatusBar,
   TouchableOpacity,
   Image,
+  ImageBackground,
   Dimensions,
   PanResponder,
 } from "react-native";
@@ -15,8 +16,8 @@ import { GameEngine } from "react-native-game-engine";
 import Constants from "../component/Constants";
 import Physics from "../component/Physics";
 import Racket from "../component/Racket";
-import Ball from "../component/Ball";
-import Wall from "../component/Wall";
+import Ball from "../component/BallBreaker";
+import Wall from "../component/BallBreaker";
 import heart from "../assets/heart.png";
 import { Gyroscope } from "expo-sensors";
 
@@ -26,7 +27,7 @@ export default class App extends Component {
     this.state = {
       running: true, // game on / off
       start: false, // ball thrown
-      lives: 3, // nb lives
+      lives: 5, // nb lives
       paddleX: 0,
       bricks: [
         { x: 10, y: 100, active: true },
@@ -268,31 +269,15 @@ export default class App extends Component {
     });
   };
 
+  thepause = (e) => {
+    this.setState({
+      start: false,
+    });
+  };
   start = (e) => {
     console.log("start");
     activateKeepAwakeAsync();
-    /*  gyroscope.subscribe(({ x, y, z, timestamp }) => {
-      //this.setState({gyroscopeY: y, gyroscopeX: x, gyroscopeZ: z})
-      let newRacketX = this.entities.racket.body.position.x;
-      if (Math.abs(x) > Math.abs(y)) {
-        newRacketX = newRacketX + x;
-      } else {
-        newRacketX = newRacketX + y;
-      }
 
-      if (newRacketX < Constants.RACKET_MIN_X_POSITION) {
-        newRacketX = Constants.RACKET_MIN_X_POSITION;
-      }
-
-      if (newRacketX > Constants.RACKET_MAX_X_POSITION) {
-        newRacketX = Constants.RACKET_MAX_X_POSITION;
-      }
-
-      Matter.Body.setPosition(this.entities.racket.body, {
-        x: newRacketX,
-        y: this.entities.racket.body.position.y,
-      });
-    }); */
     this.setState({
       start: true,
     });
@@ -311,7 +296,6 @@ export default class App extends Component {
   };
 
   reset = () => {
-    //this.gameEngine.swap(this.setupWorld());
     this.setState({
       running: true,
       start: false,
@@ -353,40 +337,144 @@ export default class App extends Component {
   render() {
     return (
       <View style={styles.container} {...this.panResponder.panHandlers}>
-        <GameEngine
-          ref={(ref) => {
-            this.gameEngine = ref;
+        <ImageBackground
+          source={{
+            uri: "https://opengameart.org/sites/default/files/tileable-grass_clover_tt7010116-sample_1.png",
           }}
-          style={styles.gameContainer}
-          systems={[Physics]}
-          running={this.state.running}
-          onEvent={this.onEvent}
-          entities={this.entities}
+          style={styles.backgroundImage}
         >
-          <StatusBar hidden={true} />
-        </GameEngine>
-        <Image source={heart} style={styles.heart} />
-        <Text style={styles.livesText}>{this.state.lives}</Text>
-        {!this.state.running && (
-          <TouchableOpacity
-            style={styles.fullScreenButton}
-            onPress={this.reset}
+          <GameEngine
+            ref={(ref) => {
+              this.gameEngine = ref;
+            }}
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+            }}
+            systems={[Physics]}
+            running={this.state.running}
+            onEvent={this.onEvent}
+            entities={this.entities}
           >
-            <View style={styles.gameOverFullScreen}>
-              <Text style={styles.gameOverText}>Game Over</Text>
-            </View>
-          </TouchableOpacity>
-        )}
-        {!this.state.start && (
-          <TouchableOpacity
-            style={styles.fullScreenButton}
-            onPress={this.start}
+            <StatusBar hidden={true} />
+          </GameEngine>
+          <View
+            style={{
+              position: "absolute",
+              bottom: 5,
+              flex: 1,
+            }}
           >
-            <View style={styles.startFullScreen}>
-              <Text style={styles.startText}>Click to start</Text>
-            </View>
+            <Text
+              style={{
+                position: "absolute",
+                bottom: 4,
+                left: 50,
+                flex: 1,
+                fontSize: 20,
+                color: "#ffffff",
+                fontWeight: "bold",
+              }}
+            >
+              {this.state.lives}: Life left
+            </Text>
+          </View>
+          <TouchableOpacity
+            // onPress={() => console.log("pause game")}
+            style={{
+              position: "absolute",
+              bottom: 5,
+              flex: 1,
+            }}
+            onPress={this.thepause}
+          >
+            <Text
+              style={{
+                position: "absolute",
+                bottom: 4,
+                left: 250,
+                flex: 1,
+                fontSize: 20,
+                color: "#ffffff",
+                fontWeight: "bold",
+              }}
+            >
+              pause game
+            </Text>
           </TouchableOpacity>
-        )}
+
+          {!this.state.running && (
+            <TouchableOpacity
+              style={{
+                position: "absolute",
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                flex: 1,
+              }}
+              onPress={this.reset}
+            >
+              <View
+                style={{
+                  borderWidth: 2,
+                  borderColor: "white",
+                  position: "absolute",
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  backgroundColor: "red",
+                  opacity: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "50%",
+                }}
+              >
+                <Text style={{ color: "white", fontSize: 48 }}>Game Over</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+          {!this.state.start && (
+            <TouchableOpacity
+              style={{
+                position: "absolute",
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                flex: 1,
+              }}
+              onPress={this.start}
+            >
+              <View
+                style={{
+                  borderWidth: 2,
+                  borderColor: "white",
+                  position: "absolute",
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  backgroundColor: "red",
+                  opacity: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "20%",
+                }}
+              >
+                <Text
+                  style={{ color: "#fff", fontSize: 30, textAlign: "center" }}
+                >
+                  Start Game
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        </ImageBackground>
       </View>
     );
   }
@@ -395,23 +483,10 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0A0E2D",
   },
-  gameContainer: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-  gameOverText: {
-    color: "white",
-    fontSize: 48,
-  },
-  startText: {
-    color: "#fff",
-    fontSize: 30,
-    textAlign: "center",
+  backgroundImage: {
+    flex: 1,
+    resizeMode: "cover",
   },
   gameOverFullScreen: {
     position: "absolute",
@@ -431,38 +506,12 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
     marginBottom: 50,
   },
-  startFullScreen: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "transparent",
-    opacity: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  fullScreenButton: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flex: 1,
-  },
+  startFullScreen: {},
+
   heart: {
     position: "absolute",
     bottom: 5,
     left: 20,
     flex: 1,
-  },
-  livesText: {
-    position: "absolute",
-    bottom: 4,
-    left: 50,
-    flex: 1,
-    fontSize: 20,
-    color: "#ffffff",
-    fontWeight: "bold",
   },
 });
