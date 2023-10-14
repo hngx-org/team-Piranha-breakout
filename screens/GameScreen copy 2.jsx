@@ -25,9 +25,9 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      running: true, // game on/off
+      running: true, // game on / off
       start: false, // ball thrown
-      lives: 5, // number of lives
+      lives: 5, // nb lives
       paddleX: 0,
       bricks: [
         { x: 10, y: 100, active: true },
@@ -47,7 +47,6 @@ export default class App extends Component {
       y: 0,
       z: 0,
       subscription: null,
-      paused: false, // Add the paused state
     };
     this.gameEngine = null;
     this.entities = this.setupWorld();
@@ -244,22 +243,6 @@ export default class App extends Component {
     };
   };
 
-  // onEvent = (e) => {
-  //   if (e.type === "game-over") {
-  //     this.resetBall();
-  //     this.setState({
-  //       running: false,
-  //       lives: 0,
-  //     });
-  //   } else if (e.type === "ball-lost") {
-  //     let newLives = this.state.lives - 1;
-  //     this.resetBall();
-  //     this.setState({
-  //       start: false,
-  //       lives: newLives,
-  //     });
-  //   }
-  // };
   onEvent = (e) => {
     if (e.type === "game-over") {
       this.resetBall();
@@ -275,10 +258,6 @@ export default class App extends Component {
         lives: newLives,
       });
     }
-
-    if (e.type === "pause-game") {
-      this.setState((prevState) => ({ paused: !prevState.paused }));
-    }
   };
 
   resetBall = () => {
@@ -291,9 +270,10 @@ export default class App extends Component {
   };
 
   thepause = (e) => {
-    if (this.state.start) {
-      this.gameEngine.dispatch({ type: "pause-game" });
-    }
+    this.setState({
+      start: false,
+      // running: false,
+    });
   };
   start = (e) => {
     console.log("start");
@@ -376,8 +356,7 @@ export default class App extends Component {
               right: 0,
             }}
             systems={[Physics]}
-            // running={this.state.running}
-            running={this.state.running && !this.state.paused}
+            running={this.state.running}
             onEvent={this.onEvent}
             entities={this.entities}
           >
@@ -386,21 +365,8 @@ export default class App extends Component {
           <View
             style={{
               position: "absolute",
-              bottom: 30,
+              bottom: 5,
               flex: 1,
-              borderWidth: 2,
-              borderColor: "white",
-              borderRadius: 5,
-              zIndex: 40,
-
-              // borderWidth: 2,
-              // borderColor: "white",
-              // position: "absolute",
-              // borderRadius: 3,
-              // bottom: 30,
-              // right: 30,
-              // flex: 1,
-              // zIndex: 40,
             }}
           >
             <Text
@@ -423,12 +389,10 @@ export default class App extends Component {
               // position: "absolute",
               // bottom: 5,
               // flex: 1,
-              borderWidth: 2,
-              borderColor: "white",
+
               position: "absolute",
-              borderRadius: 3,
-              bottom: 30,
-              right: 30,
+              bottom: 5,
+              right: 20,
               flex: 1,
               zIndex: 40,
             }}
@@ -451,7 +415,7 @@ export default class App extends Component {
                 fontWeight: "bold",
               }}
             >
-              pause
+              pause game
             </Text>
           </TouchableOpacity>
 
