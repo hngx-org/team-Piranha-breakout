@@ -34,7 +34,7 @@ const WelcomeScreen = () => {
             />
             <Button
               title="Leaderboard"
-              onPress={() => navigation.navigate("Welcome")}
+              onPress={() => navigation.navigate("PlayBreakout")}
             />
             <Button
               title="Settings"

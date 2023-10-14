@@ -17,7 +17,7 @@ const AppNavigation = () => {
       >
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Play" component={GameScreen} />
-        {/* <Stack.Screen name="Play" component={BreakoutScreen} /> */}
+        <Stack.Screen name="PlayBreakout" component={BreakoutScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
