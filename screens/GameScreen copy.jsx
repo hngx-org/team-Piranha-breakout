@@ -55,6 +55,7 @@ export default class App extends Component {
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: this.handlePaddleMove,
     });
+    this.onEvent = this.onEvent.bind(this);
   }
 
   handlePaddleMove = (e, gestureState) => {
@@ -78,36 +79,67 @@ export default class App extends Component {
   };
 
   checkGameOver = () => {
+    const { entities, bricks } = this;
     // Check if all bricks are destroyed
     if (bricks.every((brick) => !brick.active)) {
       // Handle game over, e.g., reset the ball's position and bricks
-      setBallPosition({
-        x: Dimensions.get("window").width / 2 - BALL_SIZE / 2,
-        y: Dimensions.get("window").height - 100,
+      // You should replace 'setBallPosition' and 'setBricks' with the actual methods or state updates
+      this.resetBall();
+      this.resetRacket();
+      this.setState({
+        running: false,
+        lives: 0,
       });
-      setBricks([
-        { x: 10, y: 100, active: true },
-        { x: 70, y: 100, active: true },
-        // Add more bricks as needed
-      ]);
-      // You can also increment the level or perform other actions here.
     }
 
     // Check if the ball has gone below the bottom of the screen
-    if (ballPosition.y > Dimensions.get("window").height) {
+    if (entities.ball.body.position.y > Dimensions.get("window").height) {
       // Handle game over, e.g., reset the ball's position and bricks
-      setBallPosition({
-        x: Dimensions.get("window").width / 2 - BALL_SIZE / 2,
-        y: Dimensions.get("window").height - 100,
+      // You should replace 'setBallPosition' and 'setBricks' with the actual methods or state updates
+      this.resetBall();
+      this.resetRacket();
+      this.setState({
+        start: false,
+        lives: this.state.lives - 1,
       });
-      setBricks([
-        { x: 10, y: 100, active: true },
-        { x: 70, y: 100, active: true },
-        // Add more bricks as needed
-      ]);
-      // You may also decrement lives here if applicable.
+
+      if (this.state.lives === 0) {
+        this.gameEngine.dispatch({ type: "game-over" });
+      }
     }
   };
+
+  // checkGameOver = () => {
+  //   // Check if all bricks are destroyed
+  //   if (bricks.every((brick) => !brick.active)) {
+  //     // Handle game over, e.g., reset the ball's position and bricks
+  //     setBallPosition({
+  //       x: Dimensions.get("window").width / 2 - BALL_SIZE / 2,
+  //       y: Dimensions.get("window").height - 100,
+  //     });
+  //     setBricks([
+  //       { x: 10, y: 100, active: true },
+  //       { x: 70, y: 100, active: true },
+  //       // Add more bricks as needed
+  //     ]);
+  //     // You can also increment the level or perform other actions here.
+  //   }
+
+  //   // Check if the ball has gone below the bottom of the screen
+  //   if (ballPosition.y > Dimensions.get("window").height) {
+  //     // Handle game over, e.g., reset the ball's position and bricks
+  //     setBallPosition({
+  //       x: Dimensions.get("window").width / 2 - BALL_SIZE / 2,
+  //       y: Dimensions.get("window").height - 100,
+  //     });
+  //     setBricks([
+  //       { x: 10, y: 100, active: true },
+  //       { x: 70, y: 100, active: true },
+  //       // Add more bricks as needed
+  //     ]);
+  //     // You may also decrement lives here if applicable.
+  //   }
+  // };
 
   setupWorld = () => {
     let engine = Matter.Engine.create({ enableSleeping: false });
@@ -121,6 +153,7 @@ export default class App extends Component {
       Constants.RACKET_HEIGHT,
       { isStatic: true }
     );
+    racket.label = "racket";
 
     let ball = Matter.Bodies.circle(
       Constants.RACKET_START_X_POSITION,
@@ -143,9 +176,7 @@ export default class App extends Component {
       Constants.WALL_HEIGHT / 2,
       Constants.WALL_WIDTH,
       Constants.WALL_HEIGHT,
-      {
-        isStatic: true,
-      }
+      { isStatic: true }
     );
 
     let wallRight = Matter.Bodies.rectangle(
@@ -192,6 +223,8 @@ export default class App extends Component {
       var pairs = event.pairs;
 
       let labels = [pairs[0].bodyA.label, pairs[0].bodyB.label];
+      console.log("Labels", labels);
+
       if (labels.indexOf("ball") >= 0 && labels.indexOf("floor") >= 0) {
         if (this.state.lives > 1) {
           this.gameEngine.dispatch({ type: "ball-lost" });
@@ -244,8 +277,11 @@ export default class App extends Component {
   };
 
   onEvent = (e) => {
+    console.log("Event", e.type);
+
     if (e.type === "game-over") {
       this.resetBall();
+      this.resetRacket();
       this.setState({
         running: false,
         lives: 0,
@@ -253,12 +289,42 @@ export default class App extends Component {
     } else if (e.type === "ball-lost") {
       let newLives = this.state.lives - 1;
       this.resetBall();
+      this.resetRacket();
       this.setState({
         start: false,
         lives: newLives,
       });
+
+      if (newLives === 0) {
+        this.gameEngine.dispatch({ type: "game-over" });
+      }
     }
   };
+
+  // onEvent = (e) => {
+  //   console.log("Event", e.type);
+
+  //   if (e.type === "game-over") {
+  //     this.resetBall();
+  //     this.resetRacket();
+  //     this.setState({
+  //       running: false,
+  //       lives: 0,
+  //     });
+  //   } else if (e.type === "ball-lost") {
+  //     let newLives = this.state.lives - 1;
+  //     this.resetBall();
+  //     this.resetRacket();
+  //     this.setState({
+  //       start: false,
+  //       lives: newLives,
+  //     });
+
+  //     if (newLives === 0) {
+  //       this.gameEngine.dispatch({ type: "game-over" });
+  //     }
+  //   }
+  // };
 
   resetBall = () => {
     Matter.Body.setVelocity(this.entities.ball.body, { x: 0, y: 0 });
@@ -269,11 +335,19 @@ export default class App extends Component {
     });
   };
 
+  resetRacket = () => {
+    Matter.Body.setPosition(entities.current.racket.body, {
+      x: Constants.RACKET_START_X_POSITION,
+      y: Constants.RACKET_Y_POSITION,
+    });
+  };
+
   thepause = (e) => {
     this.setState({
       start: false,
     });
   };
+
   start = (e) => {
     console.log("start");
     activateKeepAwakeAsync();
@@ -296,10 +370,12 @@ export default class App extends Component {
   };
 
   reset = () => {
+    this.resetBall();
+    this.resetRacket();
     this.setState({
       running: true,
       start: false,
-      lives: 3,
+      lives: 5,
     });
   };
 
@@ -353,6 +429,7 @@ export default class App extends Component {
               bottom: 0,
               left: 0,
               right: 0,
+              zIndex: 1,
             }}
             systems={[Physics]}
             running={this.state.running}
@@ -361,93 +438,106 @@ export default class App extends Component {
           >
             <StatusBar hidden={true} />
           </GameEngine>
+
           <View
             style={{
               position: "absolute",
               bottom: 5,
+              left: 20,
+              flexDirection: "row",
+              gap: 10,
+              alignItems: "center",
               flex: 1,
             }}
           >
+            <Image source={require("../assets/heart.png")} />
             <Text
               style={{
-                position: "absolute",
-                bottom: 4,
-                left: 50,
+                // position: "absolute",
+                // bottom: 4,/
+                // left: 50,
                 flex: 1,
                 fontSize: 20,
                 color: "#ffffff",
                 fontWeight: "bold",
               }}
             >
-              {this.state.lives}: Life left
+              {this.state.lives}
+              {/* : Life left */}
             </Text>
           </View>
-          <TouchableOpacity
-            // onPress={() => console.log("pause game")}
-            style={{
-              position: "absolute",
-              bottom: 5,
-              flex: 1,
-            }}
-            onPress={this.thepause}
-          >
-            <Text
+
+          {this.state.start && (
+            <TouchableOpacity
+              // onPress={() => console.log("pause game")}
               style={{
                 position: "absolute",
-                bottom: 4,
-                left: 250,
+                bottom: 5,
+                right: 20,
                 flex: 1,
-                fontSize: 20,
-                color: "#ffffff",
-                fontWeight: "bold",
+                zIndex: 40,
               }}
+              onPressIn={this.thepause}
+              onPress={this.thepause}
             >
-              pause game
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{
+                  // position: "absolute",
+                  // bottom: 4,
+                  // left: 250,
+                  flex: 1,
+                  fontSize: 20,
+                  color: "#ffffff",
+                  fontWeight: "bold",
+                }}
+              >
+                Pause game
+              </Text>
+            </TouchableOpacity>
+          )}
 
           {!this.state.running && (
             <TouchableOpacity
               style={{
                 position: "absolute",
-                top: 0,
-                bottom: 0,
+                top: "40%",
+                // bottom: 0,
                 left: 0,
                 right: 0,
+                minHeight: 130,
                 flex: 1,
+                backgroundColor: "red",
+                borderWidth: 2,
+                borderColor: "white",
+                alignItems: "center",
+                justifyContent: "center",
               }}
               onPress={this.reset}
             >
               <View
                 style={{
-                  borderWidth: 2,
-                  borderColor: "white",
-                  position: "absolute",
-                  top: 0,
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  backgroundColor: "red",
+                  // borderWidth: 2,
+                  // borderColor: "white",
+                  // position: "absolute",
+                  // top: 0,
+                  // bottom: 0,
+                  // left: 0,
+                  // right: 0,
+                  // backgroundColor: "red",
                   opacity: 1,
                   justifyContent: "center",
                   alignItems: "center",
-                  height: "50%",
+                  // height: "50%",
                 }}
               >
                 <Text style={{ color: "white", fontSize: 48 }}>Game Over</Text>
               </View>
             </TouchableOpacity>
           )}
+
           {!this.state.start && (
             <TouchableOpacity
               style={{
-                // position: "absolute",
-                // top: 0,
-                // bottom: 0,
-                // left: 0,
-                // right: 0,
-                // flex: 1,
-
                 position: "absolute",
                 top: "40%",
                 // bottom: 0,
@@ -475,14 +565,10 @@ export default class App extends Component {
                   // bottom: 0,
                   // left: 0,
                   // right: 0,
-                  // backgroundColor: "red",
-                  // opacity: 1,
-                  // justifyContent: "center",
-                  // alignItems: "center",
-                  // height: "20%",
                   opacity: 1,
                   justifyContent: "center",
                   alignItems: "center",
+                  // height: "20%",
                 }}
               >
                 <Text
