@@ -1,5 +1,4 @@
 import { StyleSheet, Text, View, Button } from "react-native";
-import React from "react";
 import { Card } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
 
@@ -56,7 +55,7 @@ const WelcomeScreen = () => {
             />
             <Button
               title="Settings"
-              onPress={() => console.log("Settings pressed")}
+              onPress={() => navigation.navigate("Settings")}
               color="teal"
             />
           </View>
