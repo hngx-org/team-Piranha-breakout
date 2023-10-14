@@ -1,5 +1,4 @@
 import { StyleSheet, Text, View, Button } from "react-native";
-import React from "react";
 import { Card } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
 
@@ -7,15 +6,30 @@ const WelcomeScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "black",
+      }}
+    >
       <Card
         containerStyle={{
           width: 300,
           borderRadius: 10,
         }}
       >
-        <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 40 }}>
-          Welcome to Breakout Game
+        <Text
+          style={{
+            fontSize: 30,
+            fontWeight: "bold",
+            marginBottom: 40,
+            color: "darkslategrey",
+            textAlign: "center",
+          }}
+        >
+          Breakout Game
         </Text>
 
         <View style={{ alignItems: "center" }}>
@@ -24,21 +38,25 @@ const WelcomeScreen = () => {
               flexDirection: "column",
               gap: 16,
               marginHorizontal: "auto",
+              marginBottom: 20,
               width: "100%",
               maxWidth: "70%",
             }}
           >
             <Button
-              title="Start Game"
+              title="Play Game"
               onPress={() => navigation.navigate("Play")}
+              color="teal"
             />
             <Button
               title="Leaderboard"
-              onPress={() => navigation.navigate("Welcome")}
+              onPress={() => navigation.navigate("LeaderBoard")}
+              color="teal"
             />
             <Button
               title="Settings"
-              onPress={() => console.log("Settings pressed")}
+              onPress={() => navigation.navigate("Settings")}
+              color="teal"
             />
           </View>
         </View>
