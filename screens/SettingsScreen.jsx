@@ -2,10 +2,19 @@ import { StatusBar, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Card, Switch } from "react-native-elements";
+import {
+  saveGameSettings,
+  selectSettingsState,
+} from "../redux/slices/gameSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const SettingsScreen = () => {
-  const [allowSound, setAllowSound] = useState(true);
-  const [allowMusic, setAllowMusic] = useState(true);
+  const settings = useSelector(selectSettingsState);
+  const dispatch = useDispatch();
+
+  function handleChange(field, value) {
+    dispatch(saveGameSettings({ ...settings, [field]: value }));
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -38,10 +47,10 @@ const SettingsScreen = () => {
 
               <Switch
                 trackColor={{ false: "#767577", true: "#767577" }}
-                thumbColor={allowSound ? "teal" : "#f4f3f4"}
+                thumbColor={settings.allowSound ? "teal" : "#f4f3f4"}
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={setAllowSound}
-                value={allowSound}
+                onValueChange={(value) => handleChange("allowSound", value)}
+                value={settings.allowSound}
               />
             </View>
           </Card>
@@ -58,10 +67,10 @@ const SettingsScreen = () => {
 
               <Switch
                 trackColor={{ false: "#767577", true: "#767577" }}
-                thumbColor={allowMusic ? "teal" : "#f4f3f4"}
+                thumbColor={settings.allowMusic ? "teal" : "#f4f3f4"}
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={setAllowMusic}
-                value={allowMusic}
+                onValueChange={(value) => handleChange("allowMusic", value)}
+                value={settings.allowMusic}
               />
             </View>
           </Card>
