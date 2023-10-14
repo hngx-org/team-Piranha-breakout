@@ -6,6 +6,7 @@ import WelcomeScreen from "../screens/WelcomeScreen";
 import BreakoutScreen from "../screens/BreakoutScreen";
 import GameScreen from "../screens/GameScreen";
 import LeaderBoardScreen from "../screens/LeaderBoardScreen";
+import SettingsScreen from "../screens/SettingsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +20,7 @@ const AppNavigation = () => {
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Play" component={GameScreen} />
         <Stack.Screen name="LeaderBoard" component={LeaderBoardScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="PlayBreakout" component={BreakoutScreen} />
       </Stack.Navigator>
     </NavigationContainer>

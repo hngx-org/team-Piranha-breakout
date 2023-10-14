@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StatusBar, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import UserAvatar from "react-native-user-avatar";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,6 +18,7 @@ const LeaderBoardScreen = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar backgroundColor="black" />
       <View style={{ flex: 1, padding: 20, backgroundColor: "black" }}>
         <Text
           style={{
