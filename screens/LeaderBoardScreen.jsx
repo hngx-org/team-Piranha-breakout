@@ -1,9 +1,14 @@
 import { FlatList, StatusBar, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import UserAvatar from "react-native-user-avatar";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
+import { GetBoard } from "../redux/slices/Leaderboardslice";
 
 const LeaderBoardScreen = () => {
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
   const leaderboard = [
     { name: "Lerry435", points: 231 },
     { name: "Bolaji", points: 229 },
@@ -15,6 +20,13 @@ const LeaderBoardScreen = () => {
     { name: "Abdul", points: 181 },
     { name: "Lekki Boy", points: 178 },
   ];
+
+  const { logindata } = useSelector((state) => state.authslice);
+
+  useEffect(() => {
+    dispatch(GetBoard());
+    return () => {};
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
