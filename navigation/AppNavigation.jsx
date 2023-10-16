@@ -10,6 +10,8 @@ import SettingsScreen from "../screens/SettingsScreen";
 import { Audio } from "expo-av";
 import { useSelector } from "react-redux";
 import { selectSettingsState } from "../redux/slices/gameSlice";
+import Registraion from "../screens/Registraion";
+import Login from "../screens/Login";
 
 const Stack = createNativeStackNavigator();
 
@@ -60,6 +62,8 @@ const AppNavigation = () => {
         <Stack.Screen name="LeaderBoard" component={LeaderBoardScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="PlayBreakout" component={BreakoutScreen} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Registraion" component={Registraion} />
       </Stack.Navigator>
     </NavigationContainer>
   );
