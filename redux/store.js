@@ -21,10 +21,12 @@ import { persistStore, persistReducer } from "redux-persist";
 // import { combineReducers } from "redux";
 import { gameReducer } from "./slices/gameSlice";
 import authslice from "./slices/authslice";
+import Leaderboardslice from "./slices/Leaderboardslice";
 
 const reducers = combineReducers({
   game: gameReducer,
   authslice: authslice,
+  Leaderboardslice: Leaderboardslice,
 });
 
 const persistConfig = {

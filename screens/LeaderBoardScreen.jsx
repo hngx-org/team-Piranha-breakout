@@ -21,7 +21,9 @@ const LeaderBoardScreen = () => {
     { name: "Lekki Boy", points: 178 },
   ];
 
-  const { logindata } = useSelector((state) => state.authslice);
+  const { Getboard } = useSelector((state) => state?.Leaderboardslice);
+
+  console.log({ Getboard: Getboard?.data });
 
   useEffect(() => {
     dispatch(GetBoard());
@@ -46,7 +48,7 @@ const LeaderBoardScreen = () => {
         </Text>
 
         <FlatList
-          data={leaderboard}
+          data={Getboard?.data}
           keyExtractor={(_, index) => index.toString()}
           renderItem={({ item }) => (
             <View
@@ -62,7 +64,7 @@ const LeaderBoardScreen = () => {
               }}
             >
               <View style={{ alignItems: "center" }}>
-                <UserAvatar size={40} name={item.name} />
+                <UserAvatar size={40} name={item?.User?.name} />
               </View>
 
               <View style={{ gap: 2 }}>
@@ -73,7 +75,7 @@ const LeaderBoardScreen = () => {
                     fontSize: 18,
                   }}
                 >
-                  {item.name}
+                  {item?.User?.name}
                 </Text>
                 <Text
                   style={{
@@ -82,7 +84,7 @@ const LeaderBoardScreen = () => {
                     fontSize: 14,
                   }}
                 >
-                  {item.points} points
+                  {item?.userScore} points
                 </Text>
               </View>
             </View>
