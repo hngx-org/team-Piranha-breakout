@@ -1,9 +1,19 @@
 import { StyleSheet, Text, View, Button } from "react-native";
 import { Card } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 const WelcomeScreen = () => {
   const navigation = useNavigation();
+  const { logindata } = useSelector((state) => state.authslice);
+
+  const handlelogin = () => {
+    if (logindata) {
+      navigation.navigate("Play");
+    } else {
+      navigation.navigate("Registraion");
+    }
+  };
 
   return (
     <View
@@ -43,11 +53,7 @@ const WelcomeScreen = () => {
               maxWidth: "70%",
             }}
           >
-            <Button
-              title="Play Game"
-              onPress={() => navigation.navigate("Play")}
-              color="teal"
-            />
+            <Button title="Play Game" onPress={handlelogin} color="teal" />
             <Button
               title="Leaderboard"
               onPress={() => navigation.navigate("LeaderBoard")}

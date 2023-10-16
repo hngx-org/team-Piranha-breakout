@@ -1,5 +1,5 @@
 import { StatusBar, StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Card, Switch } from "react-native-elements";
 import {
@@ -7,14 +7,25 @@ import {
   selectSettingsState,
 } from "../redux/slices/gameSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { TouchableOpacity } from "react-native";
+import { reset_login } from "../redux/slices/authslice";
+import { useNavigation } from "@react-navigation/native";
 
 const SettingsScreen = () => {
   const settings = useSelector(selectSettingsState);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   function handleChange(field, value) {
     dispatch(saveGameSettings({ ...settings, [field]: value }));
   }
+
+  const { logindata } = useSelector((state) => state.authslice);
+
+  const handleReset = () => {
+    dispatch(reset_login());
+    navigation.navigate("Welcome");
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -73,6 +84,24 @@ const SettingsScreen = () => {
                 value={settings.allowMusic}
               />
             </View>
+          </Card>
+
+          <Card containerStyle={{ borderRadius: 10 }}>
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                gap: 16,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onPress={handleReset}
+            >
+              <Text
+                style={{ fontWeight: "700", fontSize: 18, textAlign: "center" }}
+              >
+                Logout
+              </Text>
+            </TouchableOpacity>
           </Card>
         </View>
 
